@@ -8,7 +8,10 @@ Welcome to Nemty, a Raspberry Pi 4 running ArchLinux ARM for always-on services!
 ## Base system
 
 - [X] Setup service user, with appropriate permissions. Disable/restrict defaults.
-- [ ] Setup wireless access.
+- [X] Setup wireless access.
+
+The RPi 4 wireless chip (Cyprus) which isn't visible via `lspci` or `lsusb`, but can be checked using `ip link`. [This](https://raspberrypi.stackexchange.com/a/7992) link is useful for setting up the wireless profile. It is also useful to obfuscate the key using a PSK via `wpa_passphrase` (as described [here](https://wiki.archlinux.org/index.php/Netctl#Wireless)). Also recommended is enabling on startup using `netctl enable <profile-name>`.
+
 - [ ] Setup auto-mount for data partition.
 - [ ] Setup keys and email config.
 - [ ] Setup crontab with updates and health checks.
