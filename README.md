@@ -19,8 +19,11 @@ The RPi 4 wireless chip (Cyprus) which isn't visible via `lspci` or `lsusb`, but
 - [X] Setup keys and email config.
 
   For email config, I'd recommend using [msmtp](https://wiki.archlinux.org/index.php/Msmtp#Installing). If  you're using a GMail service account, you might need to set up [app passwords](https://support.google.com/accounts/answer/185833?hl=en).
-- [ ] Setup crontab with updates and health checks.
+- [X] Setup crontab with updates.
+
+  I'd recommend using `fcrontab`, and setting up `msmtp` to work with crontab (as shown [here](https://websistent.com/msmtp-cron/)).
 - [ ] Setup repo auto-update on change.
+- [ ] Setup health checks.
 
 ## External access
 
