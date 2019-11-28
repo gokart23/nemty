@@ -25,7 +25,9 @@ The RPi 4 wireless chip (Cyprus) which isn't visible via `lspci` or `lsusb`, but
   
 - [X] Setup external non-flash storage.
 
-  Using `auto,nofail,noatime,rw,user` as the options is recommended in `/etc/fstab`.
+  Using `auto,nofail,noatime,rw,exec` as the options is recommended in `/etc/fstab`.
+- [X] Bind-mount logs (`/var/log`) to external disk.
+- [ ] Configure log rotation policy.
 - [ ] Setup repo auto-update on change.
 
 ## Health checks
@@ -40,6 +42,14 @@ Recommended reading is [here](https://k3a.me/how-to-make-raspberrypi-truly-read-
 Most of this section is descriptive, please refer to your ToS of your DNS provider and/or cloud provider to ensure you're not in violation of laws.
 
 - [X] Bind IP to the DNS and/or setup reverse tunnel.
-- [ ] Disable all non-key access.
-- [ ] Install and configure `ufw`.
+- [X] Disable all non-key access.
+- [X] Install and configure `ufw`.
+
+  [This](https://www.raspberrypi.org/documentation/configuration/security.md) link might be helpful. Don't forget to allow access from the local network!
 - [ ] Install and configure `fail2ban`.
+
+## Pi-hole Wireless AP
+
+- [ ] Setup wireless AP
+- [ ] Setup Pi-hole
+- [ ] 
