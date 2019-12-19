@@ -15,7 +15,7 @@ function setupTunnel() {
     ${SSH} -f -N -T -R${TUNNEL_IF}:${TUNNEL_PORT}:0.0.0.0:${REMOTE_PORT} ${TUNNEL_HOST}
 }
 
-/bin/pidof ssh
+/bin/pidof ssh &> /dev/null
 if [[ $? -ne 0 ]]; then
     set -x
     if setupTunnel; then
