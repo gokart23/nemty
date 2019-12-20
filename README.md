@@ -44,12 +44,23 @@ Most of this section is descriptive, please refer to your ToS of your DNS provid
 - [X] Bind IP to the DNS and/or setup reverse tunnel.
 - [X] Disable all non-key access.
 - [X] Install and configure `ufw`.
+- [X] Setup a Telegram bot framework [`rascal`] ([this](https://core.telegram.org/bots/api) link is helpful, and so is the unfortunately-archived pip package [telepot](https://telepot.readthedocs.io/en/latest/) - its insanely easy, and provides a useful way to control/access Nemty)
 
   [This](https://www.raspberrypi.org/documentation/configuration/security.md) link might be helpful. Don't forget to allow access from the local network!
 - [ ] Install and configure `fail2ban`.
 
+## `rascal`: Telegram bot framework
+
+- [X] Setup basic framework, with user-ID-based service denial
+- [ ] Setup control, notifications
+
+- [ ] Setup intent identification model
+- [ ] Setup basic actions based off of intent identification
+- [ ] Setup active learning for improving existing intents
+
 ## Pi-hole Wireless AP
 
 - [ ] Setup wireless AP
-- [ ] Setup Pi-hole
-- [ ] 
+- [ ] Setup subnet for Nemty-connected devices
+- [ ] Setup bridge between wireless interface and internet-connected interface (such as ethernet) for NAT
+- [ ] Setup Pi-hole standalone service (via `dnsmasq`)
