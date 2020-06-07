@@ -37,6 +37,25 @@ The RPi 4 wireless chip (Cyprus) which isn't visible via `lspci` or `lsusb`, but
 
 Recommended reading is [here](https://k3a.me/how-to-make-raspberrypi-truly-read-only-reliable-and-trouble-free/).
 
+## VPN Access through split tunnel
+
+- [X] Install `openvpn` and setup config (either from 3rd-party VPN client config, or from the default).
+- [X] Setup file-based auth pull.
+
+In the client config, in place of `auth-user-pass`, use `auth-user-pass <fname>`, where `<fname>` is a plain text file with 2 lines, the first one being the username and the second the password. Also set up running client/group to be `nobody` (not necessary but recommended).
+
+- [ ] Setup starting as a service.
+- [X] Test it out!
+- [X] Disable default publishing of gateway redirection rules.
+
+I found [this](https://superuser.com/questions/1292106/avoid-openvpn-client-to-act-as-default-gateway) link helpful to understand the tunneling setup. Starting the openvpn client shouldn't publish the default gateway override rules anymore.
+
+- [ ] Setup a new linux network namespace for applications that need to be isolated and need to use the VPN connection.
+- [ ] Setup veth pair with one end inside the namespace, and the peer end in the default/global namespace with the physical/TUN intefaces.
+- [ ] Setup a linux bridge from the peer veth end to the tun connection.
+- [ ] Bind the application to use the newly created network namespace.
+
+
 ## External access
 
 Most of this section is descriptive, please refer to your ToS of your DNS provider and/or cloud provider to ensure you're not in violation of laws.
