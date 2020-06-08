@@ -42,13 +42,42 @@ Recommended reading is [here](https://k3a.me/how-to-make-raspberrypi-truly-read-
 - [X] Install `openvpn` and setup config (either from 3rd-party VPN client config, or from the default).
 - [X] Setup file-based auth pull.
 
-In the client config, in place of `auth-user-pass`, use `auth-user-pass <fname>`, where `<fname>` is a plain text file with 2 lines, the first one being the username and the second the password. Also set up running client/group to be `nobody` (not necessary but recommended).
+In the client config, in place of `auth-user-pass`, use `auth-user-pass <fname>`, where `<fname>` is a plain text file with 2 lines, the first one being the username and the second the password. Make sure that the running client/group is something that is accessible by the default service user! (This can be easily checked by running `curl --interface tun0 -vvv -4 icanhazip.com` and checking that the call doesn't timeout.)
 
 - [ ] Setup starting as a service.
 - [X] Test it out!
-- [X] Disable default publishing of gateway redirection rules.
+- [X] Disable default publishing of gateway redirection rules, and setup routing rules for the TUN interface.
 
-I found [this](https://superuser.com/questions/1292106/avoid-openvpn-client-to-act-as-default-gateway) link helpful to understand the tunneling setup. Starting the openvpn client shouldn't publish the default gateway override rules anymore.
+  I found [this](https://superuser.com/questions/1292106/avoid-openvpn-client-to-act-as-default-gateway) link helpful to understand the tunneling setup. Starting the openvpn client shouldn't publish the default gateway override rules anymore. The actual rule itself is `pull-filter ignore redirect-gateway`. However, this doesn't establish the rules needed for routing from/to the TUN interface correctly. As it turns out, this is a little more involved than it appears at first sight, and the following linkes are helpful in figuring out the setup
+    * The TUN routing setup as explained [here](https://community.openvpn.net/openvpn/wiki/BridgingAndRouting).
+    * Routing with multiple uplinks as explained [here](https://lartc.org/howto/lartc.rpdb.multiple-links.html) for policy-based routing.
+    * A setup for routing that worked in my context, as given [here](https://unix.stackexchange.com/a/373987).
+    * A more detailed guide to setting it up, as explained [here](http://www.georgiecasey.com/2013/07/26/how-to-use-overplay-and-other-vpns-as-a-curl-proxy/).
+    * Cleaning up the `route-up` script, as explained [here](https://forums.openvpn.net/viewtopic.php?t=25256).
+  After this reading, the following changes to the config worked for me:
+  ```bash
+  # openvpn_config.conf
+  pull-filter ignore redirect-gateway
+  script-security 2
+  route-up /etc/openvpn/client/tun0_up.sh
+  ``` 
+  where the `tun0_up.sh` script essentially sets up the routes as :
+  ```bash
+   # setup "vpn" routing table beforehand by running echo "1000 vpn" >> /etc/iproute2/rt_tables
+   vpn_rt_tablename="vpn"
+   tun_device="tun0"
+   tun_subnet_range="24"
+
+   tun0_ip_address=$(/usr/bin/ifconfig ${tun_device} | /usr/bin/grep 'inet ' | /usr/bin/awk -F' ' '{print $2}')
+
+   /usr/bin/ip route add default via ${tun0_ip_address} dev ${tun_device} table ${vpn_rt_tablename}
+   /usr/bin/ip rule add from ${tun0_ip_address}/${tun_subnet_range} table ${vpn_rt_tablename}
+   /usr/bin/ip rule add to ${tun0_ip_address}/${tun_subnet_range} table ${vpn_rt_tablename}
+   /usr/bin/ip route flush cache
+
+   exit 0
+   ```
+
 
 - [ ] Setup a new linux network namespace for applications that need to be isolated and need to use the VPN connection.
 - [ ] Setup veth pair with one end inside the namespace, and the peer end in the default/global namespace with the physical/TUN intefaces.
