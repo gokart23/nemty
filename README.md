@@ -77,8 +77,10 @@ In the client config, in place of `auth-user-pass`, use `auth-user-pass <fname>`
 
    exit 0
    ```
+  If the configuration works out correctly, `ip route show table vpn` should list the default gateway as the `tun0` IP (`ifconfig tun0 | grep 'inet '`), and `curl --interface tun0 -vvv -4 icanhazip.com` should succeed.
+  Also, if running as a `systemd` daemon, the `LimitNPROC` might need to be increased from the default of 10 (in the `systemd` service unit file under `/etc/systemd/system/multi-user.target.wants/openvpn***`) to `infinity` or a number greater than 10.
 
-
+- [ ] Verify/setup clean up script when route goes down.
 - [ ] Setup a new linux network namespace for applications that need to be isolated and need to use the VPN connection.
 - [ ] Setup veth pair with one end inside the namespace, and the peer end in the default/global namespace with the physical/TUN intefaces.
 - [ ] Setup a linux bridge from the peer veth end to the tun connection.
